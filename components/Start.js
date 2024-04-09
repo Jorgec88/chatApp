@@ -13,7 +13,7 @@ import {
 const Start = ({ navigation }) => {
   const [name, setName] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
-  const image = require('../img/BackgroundImage.png');
+  const [background, setBackground] = useState('');
 
   const handleColorSelection = (color) => {
     setSelectedColor(color);
@@ -21,7 +21,10 @@ const Start = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <ImageBackground source={image}>
+      <ImageBackground
+        source={require('../img/BackgroundImage.png')}
+        style={styles.imageBackground}
+      >
         <Text style={styles.text}>ChatApp!</Text>
         <TextInput
           style={styles.textInput}
@@ -34,20 +37,40 @@ const Start = ({ navigation }) => {
 
         <View style={styles.colorButtonsContainer}>
           <TouchableOpacity
-            style={[styles.colorButton, { backgroundColor: '#090C08' }]}
-            onPress={() => handleColorSelection('#090C08')}
+            accessible={true}
+            accessibilityLabel='More options'
+            accessibilityHint='Lets you choose to send an image or your geolocation.'
+            accessibilityRole='button'
+            style={[
+              styles.chooseColor,
+              { backgroundColor: '#090C08' },
+              background === '#090C08' && styles.selectedColor
+            ]}
+            onPress={() => setBackground('#090C08')}
           />
           <TouchableOpacity
-            style={[styles.colorButton, { backgroundColor: '#474056' }]}
-            onPress={() => handleColorSelection('#474056')}
+            style={[
+              styles.chooseColor,
+              { backgroundColor: '#474056' },
+              background === '#474056' && styles.selectedColor
+            ]}
+            onPress={() => setBackground('#474056')}
           />
           <TouchableOpacity
-            style={[styles.colorButton, { backgroundColor: '#307ef0' }]}
-            onPress={() => handleColorSelection('#307ef0')}
+            style={[
+              styles.chooseColor,
+              { backgroundColor: '#307ef0' },
+              background === '307ef0' && styles.selectedColor
+            ]}
+            onPress={() => setBackground('#307ef0')}
           />
           <TouchableOpacity
-            style={[styles.colorButton, { backgroundColor: '#85b061' }]}
-            onPress={() => handleColorSelection('#85b061')}
+            style={[
+              styles.chooseColor,
+              { backgroundColor: '#85b061' },
+              background === '#85b061' && styles.selectedColor
+            ]}
+            onPress={() => setBackground('#85b061')}
           />
         </View>
         <Button
@@ -76,15 +99,16 @@ const styles = StyleSheet.create({
     width: '88%',
     padding: 15,
     borderWidth: 1,
-    marginTop: 15,
-    marginBottom: 15
+    fontSize: 16,
+    fontWeight: '300'
   },
   text: {
-    padding: '25%',
-    flex: 5,
+    flex: 1,
+    justifyContent: 'center',
     fontSize: 45,
     fontWeight: '600',
-    color: 'white'
+    color: 'white',
+    marginTop: 80
   },
   text1: {
     fontSize: 15,
@@ -97,6 +121,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     margin: 20
+  },
+
+  chooseColor: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    border: 3,
+    marginRight: 15,
+    borderColor: 'white'
+  },
+
+  selectedColor: {
+    borderColor: '#FCD95B',
+    borderWidth: 3
   }
 });
 

@@ -1,5 +1,5 @@
 import { Bubble, GiftedChat } from 'react-native-gifted-chat';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -76,9 +76,7 @@ const Chat = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    flex: 1
   },
   text: {
     fontSize: 20,

@@ -8,6 +8,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   KeyboardAvoidingView,
+  Platform,
   Alert
 } from 'react-native';
 import { getAuth, signInAnonymously } from 'firebase/auth';
@@ -26,8 +27,8 @@ const Start = ({ navigation }) => {
       .then((result) => {
         navigation.navigate('Chat', {
           name: name,
-          backgroundColor: selectedColor,
-          id: result.user.uid
+          backgroundColor: background,
+          userID: result.user.uid
         });
         Alert.alert('Signed in succeccfully');
       })
@@ -40,7 +41,6 @@ const Start = ({ navigation }) => {
     <ImageBackground
       source={require('../img/BackgroundImage.png')}
       style={styles.imageBackground}
-      resizeMode='cover'
     >
       <Text style={styles.text}>ChatApp!</Text>
       <View style={styles.container}>

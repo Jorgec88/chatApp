@@ -1,30 +1,15 @@
-import { Bubble, GiftedChat } from 'react-native-gifted-chat';
+import { Bubble, GiftedChat, InputToolbar } from 'react-native-gifted-chat';
 import { useEffect, useState } from 'react';
 import { collection, addDoc, onSnapshot, query } from 'firebase/firestore';
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Chat = ({ route, navigation }) => {
+const Chat = ({ db, route, navigation, isConnected }) => {
   const { name, backgroundColor } = route.params;
   const [messages, setMessages] = useState([]);
 
   const onSend = (newMessages) => {
     addDoc(collection(db, 'messages'), newMessages[0]);
-  };
-
-  const renderBubble = (props) => {
-    return (
-      <Bubble
-        {...props}
-        wrapperStyle={{
-          right: {
-            backgroundColor: '#000'
-          },
-          left: {
-            backgroundColor: '#FFF'
-          }
-        }}
-      />
-    );
   };
 
   let unsubMessages;
@@ -59,12 +44,38 @@ const Chat = ({ route, navigation }) => {
     };
   }, [isConnected]);
 
+  const loadCachedMessages = async () => {
+    const cachedMessages = (await AsyncStorage.getItem('messages')) || '[]';
+    setMessages(JSON.parse(cachedMessages));
+  };
+
   const cachedMessages = async (messagesToCache) => {
     try {
       await AsyncStorage.setItem('messages', JSON.stringify(messagesToCache));
     } catch (error) {
       console.log(error.message);
     }
+  };
+
+  const renderBubble = (props) => {
+    return (
+      <Bubble
+        {...props}
+        wrapperStyle={{
+          right: {
+            backgroundColor: '#000'
+          },
+          left: {
+            backgroundColor: '#FFF'
+          }
+        }}
+      />
+    );
+  };
+
+  const renderInputToolbar = (props) => {
+    if (isConnected === true) return <InputToolbar {...props} />;
+    else return null;
   };
 
   useEffect(() => {
@@ -76,6 +87,7 @@ const Chat = ({ route, navigation }) => {
       <GiftedChat
         messages={messages}
         renderBubble={renderBubble}
+        renderInputToolbar={renderInputToolbar}
         onSend={(messages) => onSend(messages)}
         user={{
           _id: route.params.id,

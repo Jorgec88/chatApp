@@ -3,8 +3,10 @@ import { useEffect, useState } from 'react';
 import { collection, addDoc, onSnapshot, query } from 'firebase/firestore';
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomActions from './CustomActions';
+import MapView from 'react-native-maps';
 
-const Chat = ({ db, route, navigation, isConnected }) => {
+const Chat = ({ db, route, navigation, isConnected, storage }) => {
   const { name, backgroundColor } = route.params;
   const [messages, setMessages] = useState([]);
 
@@ -78,6 +80,28 @@ const Chat = ({ db, route, navigation, isConnected }) => {
     else return null;
   };
 
+  const renderCustomActions = (props) => {
+    return <CustomActions storage={storage} {...props} />;
+  };
+
+  const renderCustomView = (props) => {
+    const { currentMessage } = props;
+    if (currentMessage.location) {
+      return (
+        <MapView
+          style={{ width: 150, height: 100, borderRadius: 13, margin: 3 }}
+          region={{
+            latitude: currentMessage.location.latitude,
+            longitude: currentMessage.location.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421
+          }}
+        />
+      );
+    }
+    return null;
+  };
+
   useEffect(() => {
     navigation.setOptions({ title: name });
   }, []);
@@ -89,8 +113,10 @@ const Chat = ({ db, route, navigation, isConnected }) => {
         renderBubble={renderBubble}
         renderInputToolbar={renderInputToolbar}
         onSend={(messages) => onSend(messages)}
+        renderActions={renderCustomActions}
+        renderCustomView={renderCustomView}
         user={{
-          _id: route.params.id,
+          _id: userID,
           name
         }}
       />
